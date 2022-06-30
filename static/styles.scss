@@ -1,0 +1,66 @@
+:root {
+  font-size: 10px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  min-width: 100%;
+  min-height: 100vh;
+  font-family: Rubik, sans-serif;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  scrollbar-width: none;
+}
+
+body.mobile.noScroll {
+  overflow: hidden;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+p {
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@media only screen and (max-width: 1550px) {
+  :root {
+    font-size: 9px;
+  }
+}
+
+@media only screen and (max-width: 1400px) {
+  :root {
+    font-size: 8px;
+  }
+}
+
+@media only screen and (max-width: 1250px) {
+  :root {
+    font-size: 7px;
+  }
+}
+
+@media only screen and (max-width: 1050px) {
+  :root {
+    font-size: 6px;
+  }
+}
+
+@media only screen and (max-width: 1023px) {
+  :root {
+    font-size: 10px;
+  }
+}
