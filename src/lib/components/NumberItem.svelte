@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { NumberType } from "$lib/common/number.enum";
+  import { NumberType } from "$lib/common";
 
   export let num: number | string;
   export let type: NumberType = NumberType.MAIN;
