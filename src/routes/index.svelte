@@ -1,19 +1,22 @@
 <script lang="ts">
-  import { getRandomNumber, NumberType } from "$lib/common";
+  import { getArray, getRandomNumber, NumberType } from "$lib/common";
+  import Countdown from "$lib/components/Countdown.svelte";
   import NumberItem from "$lib/components/NumberItem.svelte";
 
-  export let numbersList: number[] = [0, 0, 0, 0, 0, 0];
-  export let sum: number = 0;
-  export const generateNumbers = (): void => {
-    numbersList = [...Array(6).keys()].map(() => getRandomNumber(1, 10));
+  let numbersList: number[] = [0, 0, 0, 0, 0, 0];
+  let sum: number = 0;
+  let gameOn: boolean = false;
+
+  const generateNumbers = (): void => {
+    gameOn = true;
+    numbersList = getArray(6).map(() => getRandomNumber(1, 10));
   };
 
   const generateRandomSum = (numList: number[]): number => {
     const list: number[] = [...numList];
     const numbersSumCount: number = getRandomNumber(2, 6);
 
-    // TODO: Add custom function for this
-    return [...Array(numbersSumCount).keys()].reduce((prev: number, current: number) => {
+    return getArray(numbersSumCount).reduce((prev: number, current: number) => {
       const length: number = list.length;
       const index: number = getRandomNumber(0, length);
       const i: number[] = list.splice(index, 1);
@@ -35,8 +38,11 @@
   </div>
 
   <div class="footer">
-    <div class="timer">10</div>
-    <button on:click={generateNumbers}>Start</button>
+    {#if gameOn}
+      <Countdown countdown={10} on:completed={() => (gameOn = false)} />
+    {:else}
+      <button on:click={generateNumbers}>Start</button>
+    {/if}
   </div>
 </section>
 
@@ -57,15 +63,7 @@
     }
 
     .footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-
-      .timer {
-        font-size: 3rem;
-        font-weight: bold;
-      }
+      text-align: center;
 
       button {
         padding: 1rem 2rem;

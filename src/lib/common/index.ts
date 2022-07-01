@@ -1,2 +1,2 @@
-export * from "./getRandomNumber.util";
+export * from "./utils";
 export * from "./number.enum";
