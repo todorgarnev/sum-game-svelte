@@ -5,6 +5,8 @@
   export let type: NumberType = NumberType.MAIN;
   export let blocked: boolean = false;
 
+  let isClicked: boolean = false;
+
   const getNumberType = (type: NumberType): string => {
     switch (type) {
       case NumberType.START:
@@ -23,7 +25,11 @@
   };
 </script>
 
-<div class={`number ${blocked && "blocked"}`} style="--bg-color: {getNumberType(type)}">
+<div
+  class={`number ${blocked ? "blocked" : ""} ${isClicked ? "clicked" : ""}`}
+  style="--bg-color: {getNumberType(type)}"
+  on:click={() => (isClicked = true)}
+>
   {num}
 </div>
 
@@ -40,6 +46,11 @@
 
     &:hover {
       opacity: 0.8;
+    }
+
+    &.clicked {
+      background-color: darkorchid;
+      color: #fff;
     }
 
     &.blocked {

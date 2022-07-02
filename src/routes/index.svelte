@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { getArray, getRandomNumber, NumberType } from "$lib/common";
+  import { getArray, getRandomNumber, NumberType, type GameStore } from "$lib/common";
   import Countdown from "$lib/components/Countdown.svelte";
   import NumberItem from "$lib/components/NumberItem.svelte";
+  import { gameStore } from "$lib/store/store";
 
   let numbersList: number[] = [0, 0, 0, 0, 0, 0];
   let sum: number = 0;
-  let gameOn: boolean = false;
 
   const generateNumbers = (): void => {
-    gameOn = true;
+    gameStore.setItem("gameOn", true);
     numbersList = getArray(6).map(() => getRandomNumber(1, 10));
   };
 
@@ -26,6 +26,7 @@
   };
 
   $: sum = numbersList.length > 0 ? generateRandomSum(numbersList) : 0;
+  $: console.log("gameStore >>", $gameStore);
 </script>
 
 <section>
@@ -38,8 +39,8 @@
   </div>
 
   <div class="footer">
-    {#if gameOn}
-      <Countdown countdown={10} on:completed={() => (gameOn = false)} />
+    {#if $gameStore.gameOn}
+      <Countdown countdown={10} on:completed={() => gameStore.setItem("gameOn", false)} />
     {:else}
       <button on:click={generateNumbers}>Start</button>
     {/if}
