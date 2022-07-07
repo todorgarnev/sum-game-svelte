@@ -1,9 +1,11 @@
-import { writable, get } from "svelte/store";
-import type { GameStore } from "$lib/common";
+import { writable } from "svelte/store";
+import { GameState, type GameStore } from "$lib/common";
 
 const initialGameStore: GameStore = {
   gameOn: false,
-  userSum: 0
+  gameState: GameState.NONE,
+  userSum: 0,
+  targetSum: 0
 };
 
 const createStore = () => {

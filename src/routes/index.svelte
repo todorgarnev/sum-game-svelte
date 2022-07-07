@@ -1,36 +1,49 @@
 <script lang="ts">
-  import { getArray, getRandomNumber, NumberType, type GameStore } from "$lib/common";
+  import { gameStore } from "$lib/store/store";
+  import { GameState, getArray, getRandomNumber, NumberType, type GameStore } from "$lib/common";
   import Countdown from "$lib/components/Countdown.svelte";
   import NumberItem from "$lib/components/NumberItem.svelte";
-  import { gameStore } from "$lib/store/store";
 
   let numbersList: number[] = [0, 0, 0, 0, 0, 0];
-  let sum: number = 0;
 
   const generateNumbers = (): void => {
     gameStore.setItem("gameOn", true);
     numbersList = getArray(6).map(() => getRandomNumber(1, 10));
   };
 
-  const generateRandomSum = (numList: number[]): number => {
+  const generateRandomSum = (numList: number[]): void => {
     const list: number[] = [...numList];
     const numbersSumCount: number = getRandomNumber(2, 6);
 
-    return getArray(numbersSumCount).reduce((prev: number, current: number) => {
+    const targetSum: number = getArray(numbersSumCount).reduce((prev: number, current: number) => {
       const length: number = list.length;
       const index: number = getRandomNumber(0, length);
       const i: number[] = list.splice(index, 1);
 
       return prev + i[0];
     }, 0);
+
+    gameStore.setItem("targetSum", targetSum);
   };
 
-  $: sum = numbersList.length > 0 ? generateRandomSum(numbersList) : 0;
+  const startGame = (): void => {
+    gameStore.setItem("userSum", 0);
+    generateNumbers();
+    generateRandomSum(numbersList);
+  };
+
+  $: if ($gameStore.userSum > $gameStore.targetSum) {
+    gameStore.setItem("gameState", GameState.LOSS);
+  } else if ($gameStore.userSum === $gameStore.targetSum) {
+    gameStore.setItem("gameState", GameState.WIN);
+  } else {
+    gameStore.setItem("gameState", GameState.NONE);
+  }
   $: console.log("gameStore >>", $gameStore);
 </script>
 
 <section>
-  <NumberItem num={sum !== 0 ? sum : "?"} type={NumberType.START} blocked />
+  <NumberItem num={$gameStore.targetSum !== 0 ? $gameStore.targetSum : "?"} type={NumberType.START} blocked />
 
   <div class="numbers">
     {#each numbersList as number}
@@ -42,7 +55,7 @@
     {#if $gameStore.gameOn}
       <Countdown countdown={10} on:completed={() => gameStore.setItem("gameOn", false)} />
     {:else}
-      <button on:click={generateNumbers}>Start</button>
+      <button on:click={startGame}>Start</button>
     {/if}
   </div>
 </section>

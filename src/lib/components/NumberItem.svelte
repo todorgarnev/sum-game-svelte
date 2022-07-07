@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { gameStore } from "$lib/store/store";
   import { NumberType } from "$lib/common";
 
   export let num: number | string;
@@ -23,12 +24,17 @@
         return "#00aacc";
     }
   };
+
+  const onItemClick = (): void => {
+    isClicked = true;
+    gameStore.setItem("userSum", $gameStore.userSum + Number(num));
+  }
 </script>
 
 <div
   class={`number ${blocked ? "blocked" : ""} ${isClicked ? "clicked" : ""}`}
   style="--bg-color: {getNumberType(type)}"
-  on:click={() => (isClicked = true)}
+  on:click={onItemClick}
 >
   {num}
 </div>
@@ -49,8 +55,8 @@
     }
 
     &.clicked {
-      background-color: darkorchid;
-      color: #fff;
+      background-color: #ccc;
+      color: #ababac;
     }
 
     &.blocked {
