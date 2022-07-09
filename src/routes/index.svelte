@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { gameSumStore, gameStateStore } from "$lib/store/store";
+  import { gameSumStore, gameStateStore, selectedNumbersStore } from "$lib/store/store";
   import { GameState, getArray, getNumberItemType, getRandomNumber, NumberType } from "$lib/common";
   import Countdown from "$lib/components/Countdown.svelte";
   import NumberItem from "$lib/components/NumberItem.svelte";
@@ -26,6 +26,7 @@
   };
 
   const startGame = (): void => {
+    selectedNumbersStore.clearStore();
     gameSumStore.updateUserSum(0);
     generateNumbers();
     generateRandomSum(numbersList);
@@ -34,14 +35,15 @@
 
 <section>
   <NumberItem
+    id={999}
     num={$gameSumStore.targetSum !== 0 ? $gameSumStore.targetSum : "?"}
     type={getNumberItemType($gameStateStore?.gameStatus || GameState.NONE)}
     blocked
   />
 
   <div class="numbers">
-    {#each numbersList as number}
-      <NumberItem num={number !== 0 ? number : "?"} type={NumberType.MAIN} />
+    {#each numbersList as number, i}
+      <NumberItem id={i} num={number !== 0 ? number : "?"} type={NumberType.MAIN} blocked={!$gameStateStore?.gameOn} />
     {/each}
   </div>
 
@@ -80,6 +82,7 @@
       display: flex;
       justify-content: space-around;
       width: 100%;
+
       button {
         padding: 1rem 2rem;
         border: none;

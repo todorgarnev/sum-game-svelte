@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { gameSumStore } from "$lib/store/store";
+  import { gameSumStore, selectedNumbersStore } from "$lib/store/store";
   import { NumberType } from "$lib/common";
 
+  export let id: number;
   export let num: number | string;
   export let type: NumberType = NumberType.MAIN;
   export let blocked: boolean = false;
-
-  let isClicked: boolean = false;
 
   const getNumberType = (type: NumberType): string => {
     switch (type) {
@@ -25,13 +24,13 @@
   };
 
   const onItemClick = (): void => {
-    isClicked = true;
+    selectedNumbersStore.addNumber(id);
     gameSumStore.updateUserSum($gameSumStore.userSum + Number(num));
-  }
+  };
 </script>
 
 <div
-  class={`number ${blocked ? "blocked" : ""} ${isClicked ? "clicked" : ""}`}
+  class={`number ${blocked ? "blocked" : ""} ${$selectedNumbersStore.includes(id) ? "clicked" : ""}`}
   style="--bg-color: {getNumberType(type)}"
   on:click={onItemClick}
 >
