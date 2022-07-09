@@ -1,16 +1,10 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from "svelte";
   import { onDestroy } from "svelte";
+  import { gameStateStore } from "$lib/store/store";
+  import { GameState } from "$lib/common";
   export let countdown: number;
 
-  const dispatch = createEventDispatcher();
-  let timer: NodeJS.Timer | null = null;
-
-  onMount(() => {
-    timer = setInterval(() => {
-      countdown -= 1;
-    }, 1000);
-  })
+  let timer: any = null;
 
   onDestroy(() => {
     if (timer) {
@@ -18,9 +12,19 @@
     }
   });
 
-  $: if (countdown === 0 && timer) {
+  $: console.log("timer >>", timer);
+
+  $: if ($gameStateStore?.gameOn && !timer) {
+    timer = setInterval(() => {
+      countdown -= 1;
+    }, 1000);
+  }
+
+  $: if (
+    (countdown === 0 && timer) ||
+    (timer && !$gameStateStore?.gameOn && $gameStateStore?.gameStatus !== GameState.NONE)
+  ) {
     clearInterval(timer);
-    dispatch("completed");
   }
 </script>
 

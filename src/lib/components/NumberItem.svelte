@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { gameStore } from "$lib/store/store";
+  import { gameSumStore } from "$lib/store/store";
   import { NumberType } from "$lib/common";
 
   export let num: number | string;
@@ -27,7 +27,7 @@
 
   const onItemClick = (): void => {
     isClicked = true;
-    gameStore.setItem("userSum", $gameStore.userSum + Number(num));
+    gameSumStore.updateUserSum($gameSumStore.userSum + Number(num));
   }
 </script>
 

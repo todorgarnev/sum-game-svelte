@@ -1,13 +1,12 @@
 <script lang="ts">
-  import { gameStore } from "$lib/store/store";
-  import { GameState, getArray, getRandomNumber, NumberType, type GameStore } from "$lib/common";
+  import { gameSumStore, gameStateStore } from "$lib/store/store";
+  import { getArray, getRandomNumber, NumberType } from "$lib/common";
   import Countdown from "$lib/components/Countdown.svelte";
   import NumberItem from "$lib/components/NumberItem.svelte";
 
   let numbersList: number[] = [0, 0, 0, 0, 0, 0];
 
   const generateNumbers = (): void => {
-    gameStore.setItem("gameOn", true);
     numbersList = getArray(6).map(() => getRandomNumber(1, 10));
   };
 
@@ -23,27 +22,21 @@
       return prev + i[0];
     }, 0);
 
-    gameStore.setItem("targetSum", targetSum);
+    gameSumStore.updateTargetSum(targetSum);
   };
 
   const startGame = (): void => {
-    gameStore.setItem("userSum", 0);
+    gameSumStore.updateUserSum(0);
     generateNumbers();
     generateRandomSum(numbersList);
   };
 
-  $: if ($gameStore.userSum > $gameStore.targetSum) {
-    gameStore.setItem("gameState", GameState.LOSS);
-  } else if ($gameStore.userSum === $gameStore.targetSum) {
-    gameStore.setItem("gameState", GameState.WIN);
-  } else {
-    gameStore.setItem("gameState", GameState.NONE);
-  }
-  $: console.log("gameStore >>", $gameStore);
+  $: console.log("gameStateStore >>", $gameStateStore);
+  $: console.log("gameSumStore >>", $gameSumStore);
 </script>
 
 <section>
-  <NumberItem num={$gameStore.targetSum !== 0 ? $gameStore.targetSum : "?"} type={NumberType.START} blocked />
+  <NumberItem num={$gameSumStore.targetSum !== 0 ? $gameSumStore.targetSum : "?"} type={NumberType.START} blocked />
 
   <div class="numbers">
     {#each numbersList as number}
@@ -52,11 +45,8 @@
   </div>
 
   <div class="footer">
-    {#if $gameStore.gameOn}
-      <Countdown countdown={10} on:completed={() => gameStore.setItem("gameOn", false)} />
-    {:else}
+      <Countdown countdown={10} />
       <button on:click={startGame}>Start</button>
-    {/if}
   </div>
 </section>
 
@@ -77,8 +67,9 @@
     }
 
     .footer {
-      text-align: center;
-
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
       button {
         padding: 1rem 2rem;
         border: none;

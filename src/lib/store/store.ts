@@ -1,26 +1,66 @@
-import { writable } from "svelte/store";
+import { writable, derived } from "svelte/store";
 import { GameState, type GameStore } from "$lib/common";
 
-const initialGameStore: GameStore = {
-  gameOn: false,
-  gameState: GameState.NONE,
+const initialGameBaseStore: GameStore = {
   userSum: 0,
   targetSum: 0
 };
 
-const createStore = () => {
-  const { update, subscribe } = writable<GameStore>(initialGameStore);
+const createBaseStore = () => {
+  const { update, subscribe } = writable<GameStore>(initialGameBaseStore);
 
   return {
     subscribe,
-    setItem: (name: string, value: boolean | number) =>
+    updateTargetSum: (value: number) =>
       update((currentGameStore: GameStore) => {
         return ({
           ...currentGameStore,
-          [name]: value
+          targetSum: value
         });
-      })
+      }),
+    updateUserSum: (value: number) =>
+      update((currentGameStore: GameStore) => {
+        return ({
+          ...currentGameStore,
+          userSum: value
+        });
+      }),
   };
 };
 
-export const gameStore = createStore();
+const createDerivedStore = () => {
+  const { subscribe } = derived(gameSumStore, $gameBaseStore => {
+    if ($gameBaseStore.targetSum === 0) {
+      return {
+        gameOn: false,
+        gameStatus: GameState.NONE
+      };
+    }
+
+    if ($gameBaseStore.targetSum > 0 && $gameBaseStore.userSum < $gameBaseStore.targetSum) {
+      return {
+        gameOn: true,
+        gameStatus: GameState.NONE
+      };
+    }
+
+    if ($gameBaseStore.userSum > $gameBaseStore.targetSum) {
+      return {
+        gameOn: false,
+        gameStatus: GameState.LOSS
+      };
+    } else if ($gameBaseStore.userSum === $gameBaseStore.targetSum) {
+      return {
+        gameOn: false,
+        gameStatus: GameState.WIN
+      };
+    }
+  });
+
+  return {
+    subscribe,
+  };
+};
+
+export const gameSumStore = createBaseStore();
+export const gameStateStore = createDerivedStore();
