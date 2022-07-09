@@ -37,7 +37,7 @@
   };
 </script>
 
-<section class="game">
+<section class="game" style="--width: {$settingsStore.items === 12 ? "32vmax" : "25vmax"}">
   <NumberItem
     id={999}
     num={$gameSumStore.targetSum !== 0 ? $gameSumStore.targetSum : "?"}
@@ -78,7 +78,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 30vmax;
+    width: 100%;
+    max-width: 34rem;
 
     .numbers {
       margin: 3rem 0;
@@ -86,7 +87,6 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 1rem;
-      width: 21rem;
     }
 
     .footer {
