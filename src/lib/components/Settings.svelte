@@ -4,12 +4,10 @@
 
   const onChangeTimerHandler = (event: Event): void => {
     settingsStore.updateTimer(Number((event.target as HTMLInputElement).value));
-  }
+  };
   const onChangeItemsHandler = (event: Event): void => {
     settingsStore.updateItems(Number((event.target as HTMLInputElement).value));
-  }
-
-  $: console.log("settingsStore >>", $settingsStore);
+  };
 </script>
 
 <section in:fly={{ x: -500, duration: 300 }} out:fly={{ x: -500, duration: 300 }}>

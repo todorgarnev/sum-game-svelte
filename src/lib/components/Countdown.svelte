@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import { gameSumStore, gameStateStore } from "$lib/store";
+  import { fly } from "svelte/transition";
+  import { gameSumStore, gameStateStore, settingsStore } from "$lib/store";
   import { GameState } from "$lib/common";
   export let countdown: number;
 
@@ -18,7 +19,7 @@
   }
 
   $: if ($gameStateStore?.gameOn && !timer) {
-    countdown = 10;
+    countdown = $settingsStore.timer;
     timer = setInterval(() => {
       countdown -= 1;
     }, 1000);
@@ -35,11 +36,14 @@
   $: timerColor = getTimerColor(countdown);
 
   const getTimerColor = (countdown: number): string => {
-    if (countdown <= 10 && countdown >= 7) {
+    const firstBreakNumber: number = $settingsStore.timer - Math.floor($settingsStore.timer / 3);
+    const secondBreakNumber: number = $settingsStore.timer - 2 * Math.floor($settingsStore.timer / 3);
+
+    if (countdown <= $settingsStore.timer && countdown >= firstBreakNumber) {
       return "#00b100";
     }
 
-    if (countdown < 7 && countdown >= 4) {
+    if (countdown < firstBreakNumber && countdown >= secondBreakNumber) {
       return "#ffd700";
     }
 
@@ -47,7 +51,7 @@
   };
 </script>
 
-<span class="timer" style="--bg-color: {timerColor}">
+<span class="timer" style="--bg-color: {timerColor}" in:fly={{ x: -500, duration: 300 }} out:fly={{ x: -500, duration: 300 }}>
   {countdown}
 </span>
 

@@ -1,20 +1,22 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
-  import { gameSumStore, gameStateStore, selectedNumbersStore } from "$lib/store";
+  import { gameSumStore, gameStateStore, selectedNumbersStore, settingsStore } from "$lib/store";
   import Countdown from "$lib/components/Countdown.svelte";
   import NumberItem from "$lib/components/NumberItem.svelte";
   import Settings from "$lib/components/Settings.svelte";
   import { GameState, getArray, getNumberItemType, getRandomNumber, NumberType } from "$lib/common";
 
-  let numbersList: number[] = [0, 0, 0, 0, 0, 0];
+  let numbersList: number[] = new Array($settingsStore.items).fill(0);
+
+  $: numbersList = new Array($settingsStore.items).fill(0);
 
   const generateNumbers = (): void => {
-    numbersList = getArray(6).map(() => getRandomNumber(1, 10));
+    numbersList = getArray($settingsStore.items).map(() => getRandomNumber(1, 10));
   };
 
   const generateRandomSum = (numList: number[]): void => {
     const list: number[] = [...numList];
-    const numbersSumCount: number = getRandomNumber(2, 6);
+    const numbersSumCount: number = getRandomNumber($settingsStore.items / 3, $settingsStore.items);
 
     const targetSum: number = getArray(numbersSumCount).reduce((prev: number) => {
       const length: number = list.length;
@@ -50,7 +52,9 @@
   </div>
 
   <div class="footer">
-    <Countdown countdown={10} />
+    {#if $settingsStore.timer > 0}
+      <Countdown countdown={$settingsStore.timer} />
+    {/if}
 
     {#if !$gameStateStore?.gameOn}
       <button on:click={startGame} in:fly={{ x: 500, duration: 300 }} out:fly={{ x: 500, duration: 300 }}>
@@ -80,6 +84,7 @@
       margin: 3rem 0;
       display: flex;
       flex-wrap: wrap;
+      justify-content: center;
       gap: 1rem;
       width: 21rem;
     }
@@ -87,6 +92,7 @@
     .footer {
       display: flex;
       justify-content: space-around;
+      align-items: center;
       width: 100%;
 
       button {
