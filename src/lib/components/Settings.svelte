@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
-  import { settingsStore } from "$lib/store/store";
+  import { settingsStore } from "$lib/store";
 
   const onChangeTimerHandler = (event: Event): void => {
     settingsStore.updateTimer(Number((event.target as HTMLInputElement).value));

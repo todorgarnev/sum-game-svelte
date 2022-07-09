@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import { gameSumStore, gameStateStore } from "$lib/store/store";
+  import { gameSumStore, gameStateStore } from "$lib/store";
   import { GameState } from "$lib/common";
   export let countdown: number;
 

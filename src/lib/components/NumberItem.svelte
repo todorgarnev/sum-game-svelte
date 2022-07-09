@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { gameSumStore, selectedNumbersStore } from "$lib/store/store";
+  import { gameSumStore, selectedNumbersStore } from "$lib/store";
   import { NumberType } from "$lib/common";
 
   export let id: number;

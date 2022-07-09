@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
-  import { gameSumStore, gameStateStore, selectedNumbersStore } from "$lib/store/store";
+  import { gameSumStore, gameStateStore, selectedNumbersStore } from "$lib/store";
   import Countdown from "$lib/components/Countdown.svelte";
   import NumberItem from "$lib/components/NumberItem.svelte";
   import Settings from "$lib/components/Settings.svelte";
