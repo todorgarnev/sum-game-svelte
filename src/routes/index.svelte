@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { fly } from "svelte/transition";
   import { gameSumStore, gameStateStore, selectedNumbersStore } from "$lib/store/store";
   import { GameState, getArray, getNumberItemType, getRandomNumber, NumberType } from "$lib/common";
   import Countdown from "$lib/components/Countdown.svelte";
@@ -51,7 +52,7 @@
     <Countdown countdown={10} />
 
     {#if !$gameStateStore?.gameOn}
-      <button on:click={startGame}>
+      <button on:click={startGame} in:fly={{ x: 100, duration: 300 }} out:fly={{ x: 100, duration: 300 }}>
         {#if $gameStateStore?.gameStatus === GameState.NONE}
           Start
         {:else}
