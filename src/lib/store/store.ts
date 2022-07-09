@@ -1,9 +1,14 @@
 import { writable, derived } from "svelte/store";
-import { GameState, type GameStore } from "$lib/common";
+import { GameState, type GameStore, type SettingsStore } from "$lib/common";
 
 const initialGameBaseStore: GameStore = {
   userSum: 0,
   targetSum: 0
+};
+
+const initialSettingsStore: SettingsStore = {
+  timer: 10,
+  items: 6
 };
 
 const createBaseStore = () => {
@@ -78,6 +83,29 @@ const createSelectedNumbersStore = () => {
   };
 }
 
+const createSettingsStore = () => {
+  const { update, subscribe } = writable<SettingsStore>(initialSettingsStore);
+
+  return {
+    subscribe,
+    updateTimer: (value: number) =>
+      update((currentSettingsStore: SettingsStore) => {
+        return ({
+          ...currentSettingsStore,
+          timer: value
+        });
+      }),
+    updateItems: (value: number) =>
+      update((currentSettingsStore: SettingsStore) => {
+        return ({
+          ...currentSettingsStore,
+          items: value
+        });
+      }),
+  };
+};
+
 export const gameSumStore = createBaseStore();
 export const gameStateStore = createDerivedStore();
 export const selectedNumbersStore = createSelectedNumbersStore();
+export const settingsStore = createSettingsStore();

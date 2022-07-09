@@ -1,9 +1,10 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
   import { gameSumStore, gameStateStore, selectedNumbersStore } from "$lib/store/store";
-  import { GameState, getArray, getNumberItemType, getRandomNumber, NumberType } from "$lib/common";
   import Countdown from "$lib/components/Countdown.svelte";
   import NumberItem from "$lib/components/NumberItem.svelte";
+  import Settings from "$lib/components/Settings.svelte";
+  import { GameState, getArray, getNumberItemType, getRandomNumber, NumberType } from "$lib/common";
 
   let numbersList: number[] = [0, 0, 0, 0, 0, 0];
 
@@ -34,7 +35,7 @@
   };
 </script>
 
-<section>
+<section class="game">
   <NumberItem
     id={999}
     num={$gameSumStore.targetSum !== 0 ? $gameSumStore.targetSum : "?"}
@@ -52,7 +53,7 @@
     <Countdown countdown={10} />
 
     {#if !$gameStateStore?.gameOn}
-      <button on:click={startGame} in:fly={{ x: 100, duration: 300 }} out:fly={{ x: 100, duration: 300 }}>
+      <button on:click={startGame} in:fly={{ x: 500, duration: 300 }} out:fly={{ x: 500, duration: 300 }}>
         {#if $gameStateStore?.gameStatus === GameState.NONE}
           Start
         {:else}
@@ -63,8 +64,12 @@
   </div>
 </section>
 
+{#if !$gameStateStore?.gameOn}
+  <Settings />
+{/if}
+
 <style lang="scss">
-  section {
+  .game {
     margin: 2rem auto;
     display: flex;
     flex-direction: column;
