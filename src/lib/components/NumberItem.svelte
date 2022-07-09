@@ -13,7 +13,6 @@
       case NumberType.START:
         return "#ffd700";
       case NumberType.SUCCESS:
-      case NumberType.SUCCESS:
         return "#00b100";
       case NumberType.FAIL:
         return "#e04343";

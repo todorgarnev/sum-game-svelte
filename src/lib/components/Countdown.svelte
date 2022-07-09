@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import { gameStateStore } from "$lib/store/store";
+  import { gameSumStore, gameStateStore } from "$lib/store/store";
   import { GameState } from "$lib/common";
   export let countdown: number;
 
-  let timer: any = null;
+  let timer: NodeJS.Timer | null = null;
 
   onDestroy(() => {
     if (timer) {
@@ -12,9 +12,12 @@
     }
   });
 
-  $: console.log("timer >>", timer);
+  $: if (countdown === 0) {
+    gameSumStore.updateUserSum($gameSumStore.targetSum + 1);
+  }
 
   $: if ($gameStateStore?.gameOn && !timer) {
+    countdown = 10;
     timer = setInterval(() => {
       countdown -= 1;
     }, 1000);
@@ -25,6 +28,7 @@
     (timer && !$gameStateStore?.gameOn && $gameStateStore?.gameStatus !== GameState.NONE)
   ) {
     clearInterval(timer);
+    timer = null;
   }
 </script>
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { gameSumStore, gameStateStore } from "$lib/store/store";
-  import { getArray, getRandomNumber, NumberType } from "$lib/common";
+  import { GameState, getArray, getNumberItemType, getRandomNumber, NumberType } from "$lib/common";
   import Countdown from "$lib/components/Countdown.svelte";
   import NumberItem from "$lib/components/NumberItem.svelte";
 
@@ -14,7 +14,7 @@
     const list: number[] = [...numList];
     const numbersSumCount: number = getRandomNumber(2, 6);
 
-    const targetSum: number = getArray(numbersSumCount).reduce((prev: number, current: number) => {
+    const targetSum: number = getArray(numbersSumCount).reduce((prev: number) => {
       const length: number = list.length;
       const index: number = getRandomNumber(0, length);
       const i: number[] = list.splice(index, 1);
@@ -30,13 +30,14 @@
     generateNumbers();
     generateRandomSum(numbersList);
   };
-
-  $: console.log("gameStateStore >>", $gameStateStore);
-  $: console.log("gameSumStore >>", $gameSumStore);
 </script>
 
 <section>
-  <NumberItem num={$gameSumStore.targetSum !== 0 ? $gameSumStore.targetSum : "?"} type={NumberType.START} blocked />
+  <NumberItem
+    num={$gameSumStore.targetSum !== 0 ? $gameSumStore.targetSum : "?"}
+    type={getNumberItemType($gameStateStore?.gameStatus || GameState.NONE)}
+    blocked
+  />
 
   <div class="numbers">
     {#each numbersList as number}
@@ -45,8 +46,17 @@
   </div>
 
   <div class="footer">
-      <Countdown countdown={10} />
-      <button on:click={startGame}>Start</button>
+    <Countdown countdown={10} />
+
+    {#if !$gameStateStore?.gameOn}
+      <button on:click={startGame}>
+        {#if $gameStateStore?.gameStatus === GameState.NONE}
+          Start
+        {:else}
+          Try again
+        {/if}
+      </button>
+    {/if}
   </div>
 </section>
 
